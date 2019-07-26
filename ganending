@@ -19,24 +19,24 @@ class Bag {
             }
             return ;
         }
-        int i=1;
-        while (i<num&&w[i]+Weights[i][k]<=W[i]) {i++;} // 列与列相加
+        int i=1;//从第一个物品开始计算
+        while (i<num&&w[i]+Weights[i][k]<=W[i]) {i++;} // 背包的物品相加要满足在约束条件内
         if(i==num){
             change(k,num,w,Weights,1);
             //for(int j=1;j<=num;++j)
                 //w[j]+=Weights[j][k]
-            a[ls]=k;  // 用于记录最优行
+            a[ls]=k;  // 用于记录最优解的数组
             ls++;
-            abc(now+Values[k],w,num, n,k+1, W, Weights, Values); // 尝试相加下一列
-            change(k,num,w,Weights,-1);  // 溢出，删掉当前得到的列
+            abc(now+Values[k],w,num, n,k+1, W, Weights, Values); // 加上价值，加上物品后继续进行循环
+            change(k,num,w,Weights,-1);  // 若不满足条件则不取这个物品，回溯到上一个物品或上一步
             ls--; // 返回上一个
         }
-        abc(now,w,num, n,k+1, W, Weights, Values);  // 尝试相加下一列
+        abc(now,w,num, n,k+1, W, Weights, Values);  // 继续调用函数进行下一步操作
     }
-    void change(int k,int num,int b[],int a[][],int val) // 改变重量    
+    void change(int k,int num,int b[],int a[][],int val) //初始化操作  
     {
         for(int i=1;i<=num;++i)
-            b[i]+=val*a[i][k]; // 用于每列相加
+            b[i]+=val*a[i][k]; // 满足约束条件的情况下将价值赋予b的数组中
     }
     void  print()
     {
@@ -69,17 +69,17 @@ class Bag {
         int c = sc.nextInt();//背包的个数
 
         //下标从0开始，表示第1个物品，从键盘输入相应的值 ，输入部分
-        for(int i = 1; i <= n; i++) {          //当行=0，行<物品个数6，行+1
-            Values[i] = sc.nextDouble();      //得出行的价值
+        for(int i = 1; i <= n; i++) {          //当行=0，行<=物品个数6，行+1
+            Values[i] = sc.nextDouble();      //从键盘输入价值
         }
-        for(int i = 1; i <=c; i++) {         //当行=0，行<背包数量10，行+1
+        for(int i = 1; i <=c; i++) {         //当行=0，行<=背包数量10，行+1
             for(int j = 1; j <= n; j++) {        //当列=0，列<物品个数6，列+1
-                Weights[i][j]=sc.nextInt();    //得出行列的重量
+                Weights[i][j]=sc.nextInt();    //从键盘输入重量
             }
         }
         for(int j = 1;j <=c; j++) {
-            //当列=0，列<背包数量10，列+1
-            W[j] = sc.nextInt();//得到列的总价值
+            //当列=0，列<=背包数量10，列+1
+            W[j] = sc.nextInt();//从键盘输入约束条件
         }
 	        /*
 	        //检验数据是否输入错误
@@ -100,14 +100,13 @@ class Bag {
 	        System.out.println();*/
 
 
-        //输出部分
         int[] w=new int[51];
         Bag bag = new Bag();
 
-        bag.abc(0,w,c, n,1, W, Weights, Values);
+        bag.abc(0,w,c, n,1, W, Weights, Values);//调用abc函数
 
         bag.print();
-        System.out.println("总价值为"+bag.ans);
+        System.out.println("总价值为"+bag.ans);//打印出最优的价值
 
     }
 }
